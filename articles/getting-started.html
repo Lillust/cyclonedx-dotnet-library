@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Getting Started </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Getting Started ">
+    <meta name="generator" content="docfx 2.58.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/cyclonedx.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="getting-started">Getting Started</h1>
+
+<p>All the following examples require the <code>CycloneDX.Core</code> library.</p>
+<p>Add to your project with the command <code>dotnet add package CycloneDX.Core</code>.</p>
+<h2 id="serialization-deserialization--validation">Serialization, Deserialization &amp; Validation</h2>
+<h3 id="json-examples">JSON Examples</h3>
+<pre><code class="lang-csharp">using CycloneDX;
+using CycloneDX.Json;
+
+...
+
+// deserializing from a string
+var bom = Serializer.Deserialize(jsonString);
+// deserializing from a stream
+var bom = await Serializer.DeserializeAsync(jsonStream);
+
+
+// serializing to a string
+var jsonString = Serializer.Serialize(bom);
+// serializing to a stream
+await Serializer.SerializeAsync(bom, stream);
+
+
+// validating a string or stream
+var result = Validator.Validate(jsonString, SpecificationVersion.v1_3);
+// or
+var result = await Validator.ValidateAsync(jsonStream, SpecificationVersion.v1_3);
+
+if (result.Valid)
+{
+    Console.WriteLine(&quot;Valid CycloneDX v1.3 JSON document&quot;);
+}
+else
+{
+    Console.WriteLine(&quot;Not a valid CycloneDX v1.3 JSON document&quot;);
+    Console.WriteLine(&quot;Validation errors:&quot;);
+    foreach (var message in result.Messages)
+    {
+        Console.WriteLine(message);
+    }
+}
+</code></pre>
+<h3 id="xml-examples">XML Examples</h3>
+<pre><code class="lang-csharp">using CycloneDX;
+using CycloneDX.Xml;
+
+...
+
+// deserializing from a string
+var bom = Serializer.Deserialize(xmlString);
+// deserializing from a stream
+var bom = Serializer.Deserialize(xmlStream);
+
+
+// serializing to a string
+var xmlString = Serializer.Serialize(bom);
+// serializing to a stream
+Serializer.Serialize(bom, stream);
+
+
+// validating a string or stream
+var result = Validator.Validate(xmlString, SpecificationVersion.v1_3);
+// or
+var result = Validator.Validate(xmlStream, SpecificationVersion.v1_3);
+
+if (result.Valid)
+{
+    Console.WriteLine(&quot;Valid CycloneDX v1.3 XML document&quot;);
+}
+else
+{
+    Console.WriteLine(&quot;Not a valid CycloneDX v1.3 XML document&quot;);
+    Console.WriteLine(&quot;Validation errors:&quot;);
+    foreach (var message in result.Messages)
+    {
+        Console.WriteLine(message);
+    }
+}
+</code></pre>
+<h3 id="protobuf-examples">Protobuf Examples</h3>
+<pre><code class="lang-csharp">using CycloneDX;
+using CycloneDX.Protobuf;
+
+...
+
+// deserializing from a byte array
+var bom = Serializer.Deserialize(protobufBytes);
+// deserializing from a stream
+var bom = Serializer.Deserialize(protobufStream);
+
+
+// serializing to a byte array
+var bytes = Serializer.Serialize(bom);
+// serializing to a stream
+Serializer.Serialize(bom, stream);
+</code></pre>
+<h2 id="converting-between-bom-formats">Converting between BOM formats</h2>
+<pre><code class="lang-csharp">using CycloneDX;
+
+...
+
+using (var inputFile = File.OpenRead(&quot;bom.json&quot;))
+using (var outputFile = File.OpenWrite(&quot;bom.xml&quot;))
+{
+    var bom = await Json.Serializer.DeserializeAsync(inputFile);
+    Xml.Serializer.Serialize(bom, outputFile);
+}
+</code></pre>
+<h2 id="downgradingupgrading-bom-formats">Downgrading/Upgrading BOM formats</h2>
+<pre><code class="lang-csharp">using CycloneDX;
+
+...
+
+using (var inputFile = File.OpenRead(&quot;bom-1.2.json&quot;))
+using (var outputFile = File.OpenWrite(&quot;bom-1.3.json&quot;))
+{
+    var bom = await Json.Serializer.DeserializeAsync(inputFile);
+    // set the SpecVersion to whatever version you want
+    bom.SpecVersion = SpecificationVersion.v1_3;
+    Json.Serializer.Serialize(bom, outputFile);
+}
+</code></pre>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Lillust/cyclonedx-dotnet-library/blob/main/docs/articles/getting-started.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

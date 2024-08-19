@@ -1,0 +1,8 @@
+#logo {
+    height: 50px;
+    width: 150px;
+}
+
+nav.navbar, .navbar-inverse .navbar-nav > .active > a {
+    background-color: #071525;
+}
